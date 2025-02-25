@@ -1,5 +1,4 @@
 variable "rg_name" {
-  default = "terraformrg"
   type = string
   
 }
@@ -15,13 +14,15 @@ variable "nic_name" {
     type = string
   
 }
+variable "subnet_address_prefixes" {
+  type    = list(string)
+}
 variable "vm_name" {
     type = string
   
 }
 variable "vm_size" {
   type        = string
-  default     = "Standard_DS1_v2"
   
 }
 
