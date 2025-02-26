@@ -40,5 +40,6 @@ variable "admin_password" {
 }
 variable "storage_ac_type" {
     type = string
+    default = "Standard_LRS"
   
 }
