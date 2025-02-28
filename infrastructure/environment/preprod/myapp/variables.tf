@@ -1,45 +1,45 @@
 variable "rg_name" {
   default = "terraformrg"
-  type = string
-  
+  type    = string
+
 }
 variable "location" {
   type = string
-  
+
 }
 variable "vnet_name" {
-    type = string
-  
+  type = string
+
 }
 variable "nic_name" {
-    type = string
-  
+  type = string
+
 }
 variable "subnet_address_prefixes" {
   type    = list(string)
-  default = ["10.0.2.0/24"]  # Optional default value
+  default = ["10.0.2.0/24"] # Optional default value
 }
 variable "vm_name" {
-    type = string
-  
+  type = string
+
 }
 variable "vm_size" {
-  type        = string
-  default     = "Standard_DS1_v2"
-  
+  type    = string
+  default = "Standard_DS1_v2"
+
 }
 
 variable "admin_username" {
-  type        = string
-  
+  type = string
+
 }
 
 variable "admin_password" {
-  type        = string
-  
+  type = string
+
 }
 variable "storage_ac_type" {
-    type = string
-    default = "Standard_LRS"
-  
+  type    = string
+  default = "Standard_LRS"
+
 }

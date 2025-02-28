@@ -10,8 +10,8 @@ resource "azurerm_subnet" "my_subnet" {
   resource_group_name  = var.rg_name
   virtual_network_name = var.vnet_name
   address_prefixes     = var.subnet_address_prefixes
-  depends_on = [ azurerm_virtual_network.my_vnet ]
-  
+  depends_on           = [azurerm_virtual_network.my_vnet]
+
 }
 resource "azurerm_public_ip" "pip" {
   name                = "${var.vm_name}-pip"
@@ -29,9 +29,9 @@ resource "azurerm_network_interface" "my_nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.my_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.pip.id
+    public_ip_address_id          = azurerm_public_ip.pip.id
   }
-  depends_on = [ azurerm_subnet.my_subnet, azurerm_public_ip.pip ]
+  depends_on = [azurerm_subnet.my_subnet, azurerm_public_ip.pip]
 }
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.rg_name}-nsg"
@@ -64,5 +64,5 @@ resource "azurerm_network_security_group" "nsg" {
 resource "azurerm_subnet_network_security_group_association" "nsg_subnet" {
   subnet_id                 = azurerm_subnet.my_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
-  depends_on = [ azurerm_subnet.my_subnet, azurerm_network_security_group.nsg ]
+  depends_on                = [azurerm_subnet.my_subnet, azurerm_network_security_group.nsg]
 }
