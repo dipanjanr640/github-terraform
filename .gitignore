@@ -1,0 +1,10 @@
+# Ignore Terraform state files and lock files
+*.tfstate
+*.tfstate.backup
+crash.log
+.terraform/
+.terraform.lock.hcl
+# Ignore large archive files
+*.zip
+*.tar.gz
+*.exe
