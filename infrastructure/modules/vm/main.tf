@@ -1,8 +1,3 @@
-resource "azurerm_resource_group" "my_rg" {
-  name     = var.rg_name
-  location = var.location
-}
-
 resource "azurerm_linux_virtual_machine" "my_vm" {
   name                            = var.vm_name
   resource_group_name             = var.rg_name

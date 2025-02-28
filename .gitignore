@@ -4,6 +4,7 @@
 crash.log
 .terraform/
 .terraform.lock.hcl
+.terraform.tfstate.lock.info
 # Ignore large archive files
 *.zip
 *.tar.gz
