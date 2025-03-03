@@ -1,18 +1,18 @@
-resource "azurerm_virtual_network" "my_vnet" {
-  name                = var.vnet_name
-  address_space       = ["10.0.0.0/16"]
-  location            = var.location
-  resource_group_name = var.rg_name
-}
-
 resource "azurerm_subnet" "my_subnet" {
+  count                = var.create_subnet ? 1 : 0 # If false, subnet is skipped
   name                 = "${var.vnet_name}-subnet"
   resource_group_name  = var.rg_name
   virtual_network_name = var.vnet_name
   address_prefixes     = var.subnet_address_prefixes
-  depends_on           = [azurerm_virtual_network.my_vnet]
 
 }
+data "azurerm_subnet" "existing_subnet" {
+  count                = var.create_subnet ? 0 : 1 # Use only when skipping creation
+  name                 = "${var.vnet_name}-subnet"
+  resource_group_name  = var.rg_name
+  virtual_network_name = var.vnet_name
+}
+
 resource "azurerm_public_ip" "pip" {
   name                = "${var.vm_name}-pip"
   location            = var.location
@@ -27,14 +27,17 @@ resource "azurerm_network_interface" "my_nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.my_subnet.id
+    subnet_id                     = var.create_subnet ? azurerm_subnet.my_subnet[0].id : data.azurerm_subnet.existing_subnet[0].id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip.id
   }
-  depends_on = [azurerm_subnet.my_subnet, azurerm_public_ip.pip]
+  depends_on = [
+    var.create_subnet ? azurerm_subnet.my_subnet : null
+  ]
 }
 resource "azurerm_network_security_group" "nsg" {
-  name                = "${var.rg_name}-nsg"
+  count               = var.create_subnet ? 1 : 0 # If false, subnet is skipped
+  name                = "${var.create_subnet ? azurerm_subnet.my_subnet[0].name : data.azurerm_subnet.existing_subnet[0].name}-nsg"
   location            = var.location
   resource_group_name = var.rg_name
 
@@ -51,7 +54,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
   security_rule {
     name                       = "allow_all_outbound"
-    priority                   = 100
+    priority                   = 110
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -62,7 +65,8 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 resource "azurerm_subnet_network_security_group_association" "nsg_subnet" {
-  subnet_id                 = azurerm_subnet.my_subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-  depends_on                = [azurerm_subnet.my_subnet, azurerm_network_security_group.nsg]
+  count                     = var.create_subnet ? 1 : 0 # If false, subnet is skipped
+  subnet_id                 = var.create_subnet ? azurerm_subnet.my_subnet[0].id : data.azurerm_subnet.existing_subnet[0].id
+  network_security_group_id = var.create_subnet ? azurerm_network_security_group.nsg[0].id : null
+
 }
