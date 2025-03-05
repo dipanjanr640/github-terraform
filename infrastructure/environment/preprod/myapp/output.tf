@@ -8,4 +8,7 @@ output "subnet_name" {
 output "pip_address" {
   value = module.preprod_myapp_network_nic.pip_name
 }
+output "vm_name" {
+  value = module.preprod_vm.vm_name
+}
 

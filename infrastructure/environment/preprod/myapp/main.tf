@@ -15,6 +15,7 @@ module "preprod_myapp_network_nic" {
   subnet_address_prefixes = var.subnet_address_prefixes
   vm_name                 = "${var.vm_name}-appserver01"
   nic_name                = "${var.vm_name}-appserver01-nic"
+  depends_on              = [module.preprod_myapp_vnet]
 
 }
 

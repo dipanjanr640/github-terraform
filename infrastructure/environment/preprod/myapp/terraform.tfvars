@@ -7,5 +7,6 @@ vm_size                 = "Standard_DS1_v2"
 admin_username          = "ubuntu"
 admin_password          = "Indira033@"
 storage_ac_type         = "Standard_LRS"
+create_subnet           = true
 
 
