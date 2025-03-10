@@ -1,0 +1,31 @@
+name: myapp infrastructure
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'infrastructure/environment/preprod/**'
+      - 'infrastructure/modules/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'infrastructure/environment/preprod/**'
+      - 'infrastructure/modules/**'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  call-terraform-template:
+    uses: ./.github/workflows/terraform-template.yml
+    with:
+        env: preprod
+        app: myapp
+        event_name: ${{ github.event_name }}
+    secrets:
+      CLIENT_ID: secrets.CLIENT_ID
+      CLIENT_SECRET: secrets.CLIENT_SECRET
+      SUBSCRIPTION_ID: secrets.SUBSCRIPTION_ID
+      TENANT_ID: secrets.TENANT_ID
+      ACCESS_KEY: secrets.ACCESS_KEY
+      GITHUB_TOKEN: secrets.GITHUB_TOKEN
+        
