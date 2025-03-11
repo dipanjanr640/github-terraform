@@ -64,11 +64,9 @@ jobs:
       - name: correct format
         run: terraform fmt
       
-      - name: Save ACCESS_KEY to File
+      - name: Check ACCESS_KEY Format
         run: |
-          echo "${ACCESS_KEY}" > access_key_debug.txt
-          echo "$STORAGE_ACCOUNT $CONTAINER_NAME $KEY"
-          cat access_key_debug.txt
+          echo "${ACCESS_KEY}" | base64 --decode > /dev/null || echo "ERROR: Invalid Base64!!"
 
       - name: Initiate terraform
         run: |
