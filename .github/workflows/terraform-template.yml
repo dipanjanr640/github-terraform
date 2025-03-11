@@ -64,15 +64,10 @@ jobs:
       - name: correct format
         run: terraform fmt
       
-      - name: Debug ACCESS_KEY
+      - name: Save ACCESS_KEY to File
         run: |
-          echo "Checking if ACCESS_KEY is set..."
-          if [[ -z "${ACCESS_KEY}" ]]; then
-          echo "ERROR: ACCESS_KEY is empty or not set!!"
-          exit 1
-          else
-          echo "ACCESS_KEY is set. ${ACCESS_KEY} "
-          fi
+          echo "${ACCESS_KEY}" > access_key_debug.txt
+          cat access_key_debug.txt
 
       - name: Initiate terraform
         run: |
