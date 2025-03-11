@@ -31,8 +31,6 @@ on:
         required: true
       ACCESS_KEY:
         required: true
-      GITHUB_TOKEN:
-        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
