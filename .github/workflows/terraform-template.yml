@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "Checking if ACCESS_KEY is set..."
           if [[ -z "${ACCESS_KEY}" ]]; then
-          echo "ERROR: ACCESS_KEY is empty or not set!"
+          echo "ERROR: ACCESS_KEY is empty or not set!!"
           exit 1
           else
           echo "ACCESS_KEY is set."
