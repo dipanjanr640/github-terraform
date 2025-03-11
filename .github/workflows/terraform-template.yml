@@ -67,6 +67,7 @@ jobs:
       - name: Save ACCESS_KEY to File
         run: |
           echo "${ACCESS_KEY}" > access_key_debug.txt
+          echo "$STORAGE_ACCOUNT $CONTAINER_NAME $KEY"
           cat access_key_debug.txt
 
       - name: Initiate terraform
