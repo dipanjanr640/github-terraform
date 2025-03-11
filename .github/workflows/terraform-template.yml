@@ -117,7 +117,7 @@ jobs:
             });
 
       - name: Approve and merger PR 
-        if: inputs.event_name == 'pull_request' &&  github.env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  github.env.EXIT_CODE == '0'
         run:  |
           gh pr review --approve ${{ github.event.pull_request.number }}
           gh pr merge --merge ${{ github.event.pull_request.number }}
@@ -125,11 +125,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Reject PR
-        if: inputs.event_name == 'pull_request' && github.env.EXIT_CODE != '0'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' && github.env.EXIT_CODE != '0'
         run:  gh pr review --request-changes --body "Terraform Plan Failed. Fix errors before merging." ${{ github.event.pull_request.number }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Terraform Apply
-        if: inputs.event_name == 'push'
+        if: inputs.event_name == 'push' || inputs.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve
