@@ -71,7 +71,7 @@ jobs:
           echo "ERROR: ACCESS_KEY is empty or not set!!"
           exit 1
           else
-          echo "ACCESS_KEY is set."
+          echo "ACCESS_KEY is set. ${ACCESS_KEY} "
           fi
 
       - name: Initiate terraform
