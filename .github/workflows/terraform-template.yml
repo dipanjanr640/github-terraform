@@ -86,6 +86,7 @@ jobs:
         #<<EOF and EOF mark the beginning and end of the multiline content.
         #Need to convert from tfplan to txt for non binaray human readable format
         run: |
+          set +e
           terraform plan -no-color -out ${ENV}-${APP}.tfplan
           exit_code=$?
           echo "EXIT_CODE=$exit_code" >> $GITHUB_ENV
