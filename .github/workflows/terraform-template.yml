@@ -79,7 +79,7 @@ jobs:
           if terraform init -backend-config="storage_account_name=${STORAGE_ACCOUNT}" \
                          -backend-config="container_name=${CONTAINER_NAME}" \
                          -backend-config="key=${KEY}" \
-                         -backend-config="access_key=${ACCESS_KEY}"; then
+                         -backend-config="access_key=${{ secrets.ACCESS_KEY }}"; then
             echo "terraform init successfully"
           else
             echo "terraform init fail"
