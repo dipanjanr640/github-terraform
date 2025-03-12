@@ -108,7 +108,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const output = process.env.${PLANSHOW}
+            const output = process.env.PLANSHOW
             const prNumber = context.payload.pull_request.number;
             github.rest.issues.createComment({
               owner: context.repo.owner,
