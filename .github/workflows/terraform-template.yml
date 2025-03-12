@@ -66,7 +66,11 @@ jobs:
       
       - name: Check ACCESS_KEY Format
         run: |
+<<<<<<< HEAD
           echo "${ACCESS_KEY}" | base64 --decode > /dev/null || echo "ERROR: Invalid Base64!!"
+=======
+          echo "${ACCESS_KEY}" | base64 --decode > /dev/null || echo "ERROR: Invalid Base64!"
+>>>>>>> 47ad5272a4df21469b10e1987aa095e1e9eadbfb
 
       - name: Initiate terraform
         run: |
