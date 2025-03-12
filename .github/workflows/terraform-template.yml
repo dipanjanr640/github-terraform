@@ -92,8 +92,8 @@ jobs:
           echo "EXIT_CODE=$exit_code" >> $GITHUB_ENV
           exit 0
 
-      - name: TF plam file
-        if: github.env.EXIT_CODE == '0'
+      - name: TF plan file
+        if: env.EXIT_CODE == '0'
         run : |          
           terraform show -no-color ${ENV}-${APP}.tfplan > ${ENV}-${APP}-tfplan.txt
           echo "TF_OUTPUT_PLAN <<EOF" >> $GITHUB_ENV
@@ -101,7 +101,7 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
         
       - name: Comment on PR
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  github.env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  env.EXIT_CODE == '0'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
             });
 
       - name: Approve and merger PR 
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  github.env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  env.EXIT_CODE == '0'
         run:  |
           gh pr review --approve ${{ github.event.pull_request.number }}
           gh pr merge --merge ${{ github.event.pull_request.number }}
@@ -124,7 +124,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Reject PR
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' && github.env.EXIT_CODE != '0'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' && env.EXIT_CODE != '0'
         run:  gh pr review --request-changes --body "Terraform Plan Failed. Fix errors before merging." ${{ github.event.pull_request.number }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
