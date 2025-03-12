@@ -75,6 +75,8 @@ jobs:
 
 
       - name: Initiate terraform
+        env:
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
         run: |
           if terraform init -backend-config="storage_account_name=${STORAGE_ACCOUNT}" \
                          -backend-config="container_name=${CONTAINER_NAME}" \
