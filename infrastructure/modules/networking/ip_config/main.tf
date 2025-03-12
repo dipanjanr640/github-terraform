@@ -31,7 +31,7 @@ resource "azurerm_network_interface" "my_nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.pip.id
   }
-  #depends_on = [azurerm_subnet.my_subnet]
+  # depends_on = [azurerm_subnet.my_subnet]
 
 }
 resource "azurerm_network_security_group" "nsg" {
