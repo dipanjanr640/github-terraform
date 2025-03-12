@@ -64,22 +64,12 @@ jobs:
       - name: correct format
         run: terraform fmt
       
-      - name: Check ACCESS_KEY Format
-        run: |
-          echo "${ACCESS_KEY}" | base64 --decode > /dev/null || echo "ERROR: Invalid Base64!"
-
-      - name: Debug ACCESS_KEY
-        run: |
-          echo "ACCESS_KEY length: ${#ACCESS_KEY}"
-          echo "ACCESS_KEY preview: $(echo "${ACCESS_KEY}" | cut -c1-5)******"
-
-
       - name: Initiate terraform
         run: |
           if terraform init -backend-config="storage_account_name=${STORAGE_ACCOUNT}" \
                          -backend-config="container_name=${CONTAINER_NAME}" \
                          -backend-config="key=${KEY}" \
-                         -backend-config="access_key=${{ secrets.ACCESS_KEY }}"; then
+                         -backend-config="access_key=${ACCESS_KEY}"; then
             echo "terraform init successfully"
           else
             echo "terraform init fail"
@@ -90,7 +80,7 @@ jobs:
         run: terraform validate 
         
       - name : Terraform plan
-        if: inputs.event_name == 'pull_request'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch'
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -110,7 +100,7 @@ jobs:
           exit $exit_code
         
       - name: Comment on PR
-        if: inputs.event_name == 'pull_request'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
