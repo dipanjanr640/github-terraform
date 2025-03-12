@@ -90,12 +90,9 @@ jobs:
         run: |
           set +e
           terraform plan -no-color -out ${ENV}-${APP}.tfplan
-          exit_code=$?
-          echo "EXIT_CODE=$exit_code" >> $GITHUB_ENV
-          exit 0
 
       - name: TF plan file
-        if: env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request'
         run : |          
           terraform show -no-color ${ENV}-${APP}.tfplan > ${ENV}-${APP}-tfplan.txt
           echo "TF_OUTPUT_PLAN <<EOF" >> $GITHUB_ENV
@@ -103,7 +100,7 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
         
       - name: Comment on PR
-        if: inputs.event_name == 'pull_request' &&  env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GH_TOKEN }}
