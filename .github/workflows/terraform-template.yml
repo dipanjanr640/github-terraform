@@ -87,25 +87,28 @@ jobs:
 
         #<<EOF and EOF mark the beginning and end of the multiline content.
         #Need to convert from tfplan to txt for non binaray human readable format
-        run: |
-          set +e
-          terraform plan -no-color -out ${ENV}-${APP}.tfplan
+        run: terraform plan -no-color -out ${ENV}-${APP}.tfplan
 
-      - name: TF plan file
+      - name: TF plan show
+        id: planshow
         if: inputs.event_name == 'pull_request'
-        run : |          
-          terraform show -no-color ${ENV}-${APP}.tfplan > ${ENV}-${APP}-tfplan.txt
-          echo "TF_OUTPUT_PLAN <<EOF" >> $GITHUB_ENV
-          cat ${ENV}-${APP}-tfplan.txt >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+        run :  terraform show -no-color ${ENV}-${APP}.tfplan 
+
+      - name: upload terraform plan for common
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app }}_${{ inputs.env }}_infra-plan
+          path: ${{ github.workspace }}/infrastructure/environment/${{ inputs.env }}/${{ inputs.app }}/${{ inputs.env }}-${{ inputs.app }}.tfplan
         
       - name: Comment on PR
         if: inputs.event_name == 'pull_request'
         uses: actions/github-script@v6
+        env:
+          PLANSHOW: ${{ steps.planshow.outputs.stdout }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const output = process.env.TF_OUTPUT_PLAN
+            const output = process.env.${PLANSHOW}
             const prNumber = context.payload.pull_request.number;
             github.rest.issues.createComment({
               owner: context.repo.owner,
