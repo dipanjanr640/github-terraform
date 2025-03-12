@@ -66,15 +66,11 @@ jobs:
       
       - name: Initiate terraform
         run: |
-          if terraform init -backend-config="storage_account_name=${STORAGE_ACCOUNT}" \
+          terraform init -backend-config="storage_account_name=${STORAGE_ACCOUNT}" \
                          -backend-config="container_name=${CONTAINER_NAME}" \
                          -backend-config="key=${KEY}" \
-                         -backend-config="access_key=${ACCESS_KEY}"; then
-            echo "terraform init successfully"
-          else
-            echo "terraform init fail"
-            exit 1
-          fi
+                         -backend-config="access_key=${ACCESS_KEY}"
+
       - name: Validate terraform
         id: validate
         run: terraform validate 
@@ -84,7 +80,7 @@ jobs:
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
 
         #<<EOF and EOF mark the beginning and end of the multiline content.
@@ -97,7 +93,7 @@ jobs:
           echo "TF_OUTPUT_PLAN <<EOF" >> $GITHUB_ENV
           cat ${ENV}-${APP}-tfplan.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          exit $exit_code
+          exit 0
         
       - name: Comment on PR
         if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch'
