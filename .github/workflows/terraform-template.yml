@@ -130,4 +130,9 @@ jobs:
 
       - name: Terraform Apply
         if: inputs.event_name == 'push' || inputs.event_name == 'workflow_dispatch'
+        env:
+          ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: terraform apply -auto-approve
