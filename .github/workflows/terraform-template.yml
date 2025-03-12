@@ -88,12 +88,16 @@ jobs:
         run: |
           terraform plan -no-color -out ${ENV}-${APP}.tfplan
           exit_code=$?
-          terraform show -no-color ${ENV}-${APP}.tfplan > ${ENV}-${APP}-tfplan.txt
           echo "EXIT_CODE=$exit_code" >> $GITHUB_ENV
+          exit 0
+
+      - name: TF plam file
+        if: github.env.EXIT_CODE == '0'
+        run : |          
+          terraform show -no-color ${ENV}-${APP}.tfplan > ${ENV}-${APP}-tfplan.txt
           echo "TF_OUTPUT_PLAN <<EOF" >> $GITHUB_ENV
           cat ${ENV}-${APP}-tfplan.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          exit 0
         
       - name: Comment on PR
         if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  github.env.EXIT_CODE == '0'
