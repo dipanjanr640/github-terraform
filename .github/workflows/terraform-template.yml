@@ -96,7 +96,7 @@ jobs:
           exit 0
         
       - name: Comment on PR
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch'
+        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  github.env.EXIT_CODE == '0'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
