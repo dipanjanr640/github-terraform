@@ -31,6 +31,8 @@ on:
         required: true
       ACCESS_KEY:
         required: true
+      GH_TOKEN:
+        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -76,11 +78,11 @@ jobs:
         run: terraform validate 
         
       - name : Terraform plan
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch'
+        if: inputs.event_name == 'pull_request'
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
 
         #<<EOF and EOF mark the beginning and end of the multiline content.
@@ -101,10 +103,10 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
         
       - name: Comment on PR
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  env.EXIT_CODE == '0'
+        if: inputs.event_name == 'pull_request' &&  env.EXIT_CODE == '0'
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const output = process.env.TF_OUTPUT_PLAN
             const prNumber = context.payload.pull_request.number;
@@ -115,22 +117,8 @@ jobs:
               body: `### Terraform Plan Output\n\`\`\`\n${output}\n\`\`\``
             });
 
-      - name: Approve and merger PR 
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' &&  env.EXIT_CODE == '0'
-        run:  |
-          gh pr review --approve ${{ github.event.pull_request.number }}
-          gh pr merge --merge ${{ github.event.pull_request.number }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Reject PR
-        if: inputs.event_name == 'pull_request' || inputs.event_name == 'workflow_dispatch' && env.EXIT_CODE != '0'
-        run:  gh pr review --request-changes --body "Terraform Plan Failed. Fix errors before merging." ${{ github.event.pull_request.number }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Terraform Apply
-        if: inputs.event_name == 'push' || inputs.event_name == 'workflow_dispatch'
+        if: inputs.event_name == 'push'
         env:
           ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

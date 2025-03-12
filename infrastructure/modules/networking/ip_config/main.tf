@@ -35,7 +35,7 @@ resource "azurerm_network_interface" "my_nic" {
 
 }
 resource "azurerm_network_security_group" "nsg" {
-  count               = var.create_subnet ? 1 : 0 # If false, subnet is skipped
+  count               = var.create_subnet ? 1 : 0 # If false, subnet is skipped.
   name                = "${var.create_subnet ? azurerm_subnet.my_subnet[0].name : data.azurerm_subnet.existing_subnet[0].name}-nsg"
   location            = var.location
   resource_group_name = var.rg_name
