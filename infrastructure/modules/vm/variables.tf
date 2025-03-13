@@ -32,3 +32,11 @@ variable "storage_ac_type" {
   type = string
 
 }
+
+variable "tags_list" {
+  description = "List of tag objects"
+  type = list(object({
+    key   = string
+    value = string
+  }))
+}
