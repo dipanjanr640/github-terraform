@@ -35,7 +35,7 @@ module "preprod_vm" {
 }
 
 resource "random_password" "vm_password" {
-  length  = 5
+  length  = 6
   special = true
 
 }
