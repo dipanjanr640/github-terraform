@@ -22,7 +22,7 @@ module "preprod_myapp_network_nic" {
 
 module "preprod_vm" {
   source          = "../../../modules/vm"
-  rg_name         = var.rg_name1
+  rg_name         = var.rg_name
   location        = var.location
   vm_name         = "${var.vm_name}-appserver01"
   vm_size         = var.vm_size
