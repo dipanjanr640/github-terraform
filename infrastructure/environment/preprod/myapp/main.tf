@@ -22,7 +22,7 @@ module "preprod_myapp_network_nic" {
 
 module "preprod_vm" {
   source          = "../../../modules/vm"
-  rg_name         = var.rg_name
+  rg_name         = var.rg_name1
   location        = var.location
   vm_name         = "${var.vm_name}-appserver01"
   vm_size         = var.vm_size
@@ -35,7 +35,7 @@ module "preprod_vm" {
 }
 
 resource "random_password" "vm_password" {
-  length  = 5
+  length  = 6
   special = true
 
 }
