@@ -11,4 +11,7 @@ output "pip_address" {
 output "vm_name" {
   value = module.preprod_vm.vm_name
 }
+output "vm_password" {
+  value = nonsensitive(random_password.vm_password.result)
+}
 

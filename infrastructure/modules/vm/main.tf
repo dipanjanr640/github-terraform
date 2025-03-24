@@ -19,4 +19,6 @@ resource "azurerm_linux_virtual_machine" "my_vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  tags = { for tag in var.tags_list : tag.key => tag.value }
 }

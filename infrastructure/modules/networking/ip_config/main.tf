@@ -40,29 +40,22 @@ resource "azurerm_network_security_group" "nsg" {
   location            = var.location
   resource_group_name = var.rg_name
 
-  security_rule {
-    name                       = "allow_all_inbound"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "allow_all_outbound"
-    priority                   = 110
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+  dynamic "security_rule" {
+    for_each = var.security_rules
+    content {
+      name                       = security_rule.value["name"]
+      priority                   = security_rule.value["priority"]
+      direction                  = security_rule.value["direction"]
+      access                     = security_rule.value["access"]
+      protocol                   = security_rule.value["protocol"]
+      source_port_range          = security_rule.value["source_port_range"]
+      destination_port_range     = security_rule.value["destination_port_range"]
+      source_address_prefix      = security_rule.value["source_address_prefix"]
+      destination_address_prefix = security_rule.value["destination_address_prefix"]
+    }
   }
 }
+
 resource "azurerm_subnet_network_security_group_association" "nsg_subnet" {
   count                     = var.create_subnet ? 1 : 0 # If false, subnet is skipped
   subnet_id                 = var.create_subnet ? azurerm_subnet.my_subnet[0].id : data.azurerm_subnet.existing_subnet[0].id
