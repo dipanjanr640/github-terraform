@@ -35,7 +35,11 @@ module "preprod_vm" {
 }
 
 resource "random_password" "vm_password" {
-  length  = 6
+  
   special = true
-
+  upper   = true
+  lower   = true
+  numeric = true
+  override_special = "!@#$%^&*()-=+[]{}<>?"
+  length  = 6
 }
